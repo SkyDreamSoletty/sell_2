@@ -1,6 +1,6 @@
 package com.im.sell.repository;
 
-import com.im.sell.dataObject.ProductCategory;
+import com.im.sell.dataobject.ProductCategory;
 import org.springframework.data.jpa.repository.JpaRepository;
 
 import java.util.List;

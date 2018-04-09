@@ -1,6 +1,6 @@
 package com.im.sell.repository;
 
-import com.im.sell.dataObject.ProductCategory;
+import com.im.sell.dataobject.ProductCategory;
 import org.junit.Assert;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -9,10 +9,8 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.junit4.SpringRunner;
 
 import javax.transaction.Transactional;
-import java.lang.reflect.Array;
 import java.util.Arrays;
 import java.util.List;
-import java.util.Optional;
 
 
 @RunWith(SpringRunner.class)
@@ -23,10 +21,12 @@ public class ProductCategoryRepositoryTest {
     private ProductCategoryRepository repository;
 
     @Test
+    @Transactional
     public void findOneTest(){
-        Optional<ProductCategory> productCategory = repository.findById(1);
+//        Optional<ProductCategory> productCategory = repository.findById(1);
+        ProductCategory productCategory = repository.getOne(3);
         System.out.println(productCategory);
-        System.out.println(productCategory.get());
+//        System.out.println(productCategory.get());
     }
 
     @Test
