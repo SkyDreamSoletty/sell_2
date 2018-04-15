@@ -3,6 +3,7 @@ package com.im.sell.service.impl;
 import com.im.sell.dataobject.OrderDetail;
 import com.im.sell.dataobject.OrderMaster;
 import com.im.sell.dataobject.ProductInfo;
+import com.im.sell.dto.CartDTO;
 import com.im.sell.dto.OrderDTO;
 import com.im.sell.enums.OrderStatusEnum;
 import com.im.sell.enums.PayStatusEnum;
@@ -23,6 +24,8 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.math.BigDecimal;
 import java.math.BigInteger;
+import java.util.List;
+import java.util.stream.Collectors;
 
 
 /**
@@ -50,12 +53,12 @@ public class OrderServiceImpl implements OrderService {
 
         //1.查询商品(数量,价格)
         for(OrderDetail orderDetail : orderDTO.getOrderDetailList()){
-            ProductInfo productInfo = productService.findOne(orderDetail.getDetailId());
+            ProductInfo productInfo = productService.findOne(orderDetail.getProductId());
             if(productInfo == null){
                 throw new SellException(ResultEnum.PRODUCT_NOT_EXIST);
             }
             //2.计算订单总价
-            orderAmount = orderDetail.getProductPrice().multiply(new BigDecimal(orderDetail.getProductQuantity())).add(orderAmount);
+            orderAmount = productInfo.getProductPrice().multiply(new BigDecimal(orderDetail.getProductQuantity())).add(orderAmount);
             //订单详情入库
             orderDetail.setDetailId(KeyUtil.genUniqueKey());
             orderDetail.setOrderId(orderId);
@@ -64,14 +67,17 @@ public class OrderServiceImpl implements OrderService {
         }
         //3.写入订单数据库(orderMaster和orderDetail)
         OrderMaster orderMaster = new OrderMaster();
-        orderDTO.setOrderId(orderId);
         BeanUtils.copyProperties(orderDTO, orderMaster);
+//        orderDTO.setOrderId(orderId);
+        orderMaster.setOrderId(orderId);
         orderMaster.setOrderAmount(orderAmount);
         orderMaster.setOrderStatus(OrderStatusEnum.NEW.getCode());
         orderMaster.setPayStatus(PayStatusEnum.WAIT.getCode());
         orderMasterRepository.save(orderMaster);
         //4.扣库存
-
+        List<CartDTO> cartDTOList = orderDTO.getOrderDetailList().stream().map(e -> new CartDTO(e.getProductId(),e.getProductQuantity())
+        ).collect(Collectors.toList());
+        productService.decreaseStock(cartDTOList);
         return orderDTO;
     }
 
