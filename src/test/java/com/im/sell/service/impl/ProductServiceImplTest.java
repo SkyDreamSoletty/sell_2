@@ -29,8 +29,9 @@ public class ProductServiceImplTest {
     @Test
     @Transactional
     public void findOne() {
-        ProductInfo productInfo = productService.findOne("123456");
-        Assert.assertEquals("皮蛋粥",productInfo.getProductName());
+        ProductInfo productInfo = productService.findOne("1234568");
+        System.out.println(productInfo.getProductName());
+        Assert.assertEquals("滑蛋牛肉粥",productInfo.getProductName());
     }
 
     @Test

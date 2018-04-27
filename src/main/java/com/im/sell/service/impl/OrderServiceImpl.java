@@ -42,7 +42,7 @@ import java.util.stream.Collectors;
 public class OrderServiceImpl implements OrderService {
 
     @Autowired
-    private ProductService productService;
+    private ProductServiceImpl productService;
     @Autowired
     private OrderDetailRepository orderDetailRepository;
     @Autowired
@@ -63,6 +63,9 @@ public class OrderServiceImpl implements OrderService {
                 throw new SellException(ResultEnum.PRODUCT_NOT_EXIST);
             }
             //2.计算订单总价
+            System.out.println(productInfo.getProductPrice());
+            System.out.println(orderDetail.getProductQuantity());
+            System.out.println(orderAmount);
             orderAmount = productInfo.getProductPrice().multiply(new BigDecimal(orderDetail.getProductQuantity())).add(orderAmount);
             //订单详情入库
             orderDetail.setDetailId(KeyUtil.genUniqueKey());
@@ -72,9 +75,9 @@ public class OrderServiceImpl implements OrderService {
         }
         //3.写入订单数据库(orderMaster和orderDetail)
         OrderMaster orderMaster = new OrderMaster();
+        orderDTO.setOrderId(orderId);
         BeanUtils.copyProperties(orderDTO, orderMaster);
-//        orderDTO.setOrderId(orderId);
-        orderMaster.setOrderId(orderId);
+//        orderMaster.setOrderId(orderId);
         orderMaster.setOrderAmount(orderAmount);
         orderMaster.setOrderStatus(OrderStatusEnum.NEW.getCode());
         orderMaster.setPayStatus(PayStatusEnum.WAIT.getCode());

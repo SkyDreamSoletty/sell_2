@@ -8,7 +8,10 @@ spring:
 #    url: jdbc:mysql://127.0.0.1:3306/sell?characterEncoding=utf-8&useSSL=false
   jpa:
     show-sql: true
+  jackson:
+    default-property-inclusion: non_null #字段值为null的结果不返回 如果为null且必须返回可以设置初始值来让结果好看些
 #    open-in-view: true
+
 server:
   servlet:
     context-path: /sell
