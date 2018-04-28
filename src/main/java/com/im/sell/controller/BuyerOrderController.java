@@ -6,6 +6,7 @@ import com.im.sell.dto.OrderDTO;
 import com.im.sell.enums.ResultEnum;
 import com.im.sell.exception.SellException;
 import com.im.sell.form.OrderForm;
+import com.im.sell.service.BuyerService;
 import com.im.sell.service.OrderService;
 import com.im.sell.service.impl.OrderServiceImpl;
 import com.im.sell.util.ResultVOUtil;
@@ -29,7 +30,10 @@ import java.util.Map;
 public class BuyerOrderController {
 
     @Autowired
-    private OrderServiceImpl orderService;
+    private OrderService orderService;
+
+    @Autowired
+    private BuyerService buyerService;
 
     //创建订单
     @PostMapping("/create")
@@ -72,7 +76,7 @@ public class BuyerOrderController {
     public ResultVO<OrderDTO> detail(@RequestParam("openid") String openid,
                                      @RequestParam("orderId") String orderId) {
 //        OrderDTO orderDTO = buyerService.findOrderOne(openid, orderId);
-        //TODO 不安全的做法,改进
+//      不安全的做法,改进 如下
         OrderDTO orderDTO = orderService.findOne(orderId);
         return ResultVOUtil.success(orderDTO);
     }
@@ -82,7 +86,7 @@ public class BuyerOrderController {
     public ResultVO cancel(@RequestParam("openid") String openid,
                            @RequestParam("orderId") String orderId) {
 //        buyerService.cancelOrder(openid, orderId);
-        //TODO
+        //      不安全的做法,改进 如下
         OrderDTO orderDTO = orderService.findOne(orderId);
         orderService.cancel(orderDTO);
         return ResultVOUtil.success();
